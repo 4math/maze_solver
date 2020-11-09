@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        Labyrinth lab;
+        Labyrinth lab = new Labyrinth();
         int row, col, genMethod, solveMethod;
         char ans;
         try {
@@ -29,6 +29,26 @@ public class Main {
                 System.out.println("2) RDFS algorithm");
                 System.out.print("labyrinth method (1-2): ");
                 genMethod = sc.nextInt();
+
+                switch (genMethod) {
+                    case 1:
+                        lab.createPrims(row, col, 0);
+                        break;
+                    case 2:
+                        lab.createRDFS();
+                        break;
+                }
+
+                for(int r = 0; r < row; r++) {
+                    for(int c = 0; c < col; c++) {
+                        if(lab.maze[r][c] == 0) {
+                            System.out.print("░");
+                        } else {
+                            System.out.print("█");
+                        }
+                    }
+                    System.out.println();
+                }
             }
             else {
                 // error
@@ -42,13 +62,22 @@ public class Main {
             System.out.print("method number (1-3):");
             solveMethod = sc.nextInt();
 
+            switch (solveMethod) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+
             System.out.println("results:");
             for (int i=0; i<2; i++) {
                 System.out.println("");
             }
 
         } catch (Exception e) {
-            System.out.println("input error");
+            System.out.println(e.getMessage());
         }
 
     }
