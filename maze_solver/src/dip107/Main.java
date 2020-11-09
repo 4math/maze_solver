@@ -41,6 +41,7 @@ public class Main {
             System.out.println("3) A* method");
             System.out.print("method number (1-3):");
             solveMethod = sc.nextInt();
+            //empty comment
 
             System.out.println("results:");
             for (int i=0; i<2; i++) {
