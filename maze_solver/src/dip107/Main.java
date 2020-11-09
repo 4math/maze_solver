@@ -64,16 +64,13 @@ public class Main {
 
             switch (solveMethod) {
                 case 1:
+                    lab.solveDFS();
                     break;
                 case 2:
+                    lab.solveBFS();
                     break;
                 case 3:
                     break;
-            }
-
-            System.out.println("results:");
-            for (int i=0; i<2; i++) {
-                System.out.println("");
             }
 
         } catch (Exception e) {

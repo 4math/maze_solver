@@ -1,14 +1,18 @@
 package dip107;
 
+import java.util.Deque;
 import java.util.Random;
 import java.util.LinkedList;
 
 public class Labyrinth {
 
     public int[][] maze;
+    int width, height;
 
     public void createEmpty(int row, int col) {
         maze = new int[row][col];
+        width = col;
+        height = row;
     }
 
     public void createPrims(int row, int col, int seed) {
@@ -67,16 +71,119 @@ public class Labyrinth {
     }
 
     public void createRDFS() {
-        
+
     }
 
     public void solveDFS() {
+        int[][] neighbors = {
+                {-1, 0}, {+1, 0}, {0, -1}, {0, +1}
+        };
 
+        boolean[][] visited = new boolean[height][width];
+
+        for(int row = 0; row < height; row++) {
+            for(int col = 0; col < width; col++) {
+                visited[row][col] = false;
+            }
+        }
+
+        Deque<Pair> deque = new LinkedList<>();
+        deque.push(new Pair(0, 0));
+
+        while(true) {
+            Pair current = deque.peekLast();
+            visited[current.x][current.y] = true;
+
+            if(current.x == height - 1 && current.y == width - 1) {
+                break;
+            }
+
+            boolean flag = false;
+            for(int i = 0; i < 4; i++) {
+                int nRow = neighbors[i][0] + current.x, nCol = neighbors[i][1] + current.y;
+                if(nRow >= 0 && nRow < height && nCol >= 0 && nCol < width && !visited[nRow][nCol] && maze[nRow][nCol] == 0) {
+                    deque.addLast(new Pair(nRow, nCol));
+                    flag = true;
+                    break;
+                }
+            }
+
+            if(!flag) {
+                deque.removeLast();
+            }
+        }
+
+        System.out.println("results:");
+        while(!deque.isEmpty()) {
+            Pair coord = deque.pollFirst();
+            System.out.printf("(%d,%d) ", coord.x, coord.y);
+        }
     }
 
     public void solveBFS() {
+        int[][] neighbors = {
+                {-1, 0}, {+1, 0}, {0, -1}, {0, +1}
+        };
 
+        boolean[][] visited = new boolean[height][width];
+        int[][] weight = new int[height][width];
+
+        for(int row = 0; row < height; row++) {
+            for(int col = 0; col < width; col++) {
+                visited[row][col] = false;
+                weight[row][col] = 0;
+            }
+        }
+
+        int[][] a = new int[height * width][3];
+        a[0][0] = 0;
+        a[0][1] = 0;
+        a[0][2] = -1;
+        int n = 0, m = 1;
+        visited[0][0] = true;
+
+        while(true) {
+            Pair current = new Pair(a[n][0], a[n][1]);
+
+            if(current.x == height - 1 && current.y == width - 1) {
+                break;
+            }
+
+            boolean flag = false;
+            for(int i = 0; i < 4; i++) {
+                int nRow = neighbors[i][0] + current.x, nCol = neighbors[i][1] + current.y;
+                if(nRow >= 0 && nRow < height && nCol >= 0 && nCol < width && !visited[nRow][nCol] && maze[nRow][nCol] == 0) {
+                    a[m][0] = nRow;
+                    a[m][1] = nCol;
+                    a[m][2] = n;
+                    m++;
+                    visited[nRow][nCol] = true;
+                    weight[nRow][nCol] = weight[current.x][current.y] + 1;
+                }
+            }
+
+            n++;
+        }
+
+        System.out.println("results:");
+
+        LinkedList<Pair> outputList = new LinkedList<>();
+        int mm = a[n][2];
+        Pair coord = new Pair(a[n][0], a[n][1]);
+        while(mm != -1) {
+            outputList.add(new Pair(coord.x, coord.y));
+            coord = new Pair(a[mm][0], a[mm][1]);
+            mm = a[mm][2];
+        }
+        outputList.add(new Pair(0, 0));
+
+        while(!outputList.isEmpty()) {
+            coord = outputList.pollLast();
+            System.out.printf("(%d,%d) ", coord.x, coord.y);
+        }
     }
 
-    public void solveAStar() {}
+    public void solveAStar() {
+
+    }
 }
