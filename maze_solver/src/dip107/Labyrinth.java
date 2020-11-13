@@ -47,15 +47,15 @@ public class Labyrinth {
             maze[frontierCell.x][frontierCell.y] = 0;
 
             LinkedList<Pair> neighborList = new LinkedList<>();
-            for(int i = 0; i < 4; i++) { // Compute list of neighbours
+            for(int i = 0; i < 4; i++) { // Compute list of neighbors
                 int nRow = neighbors[i][0] + frontierCell.x, nCol = neighbors[i][1] + frontierCell.y;
                 if(nRow >= 0 && nRow < row && nCol >= 0 && nCol < col && maze[nRow][nCol] == 0) {
                     neighborList.add(new Pair(nRow, nCol));
                 }
             }
 
-            int randomNeighbourIdx = random.nextInt(neighborList.size());
-            Pair neighborCell = neighborList.get(randomNeighbourIdx);
+            int randomNeighborIdx = random.nextInt(neighborList.size());
+            Pair neighborCell = neighborList.get(randomNeighborIdx);
             maze[(frontierCell.x + neighborCell.x) / 2][(frontierCell.y + neighborCell.y) / 2] = 0;
 
             for(int i = 0; i < 4; i++) { // Compute next frontiers
@@ -94,29 +94,29 @@ public class Labyrinth {
             Pair current = deque.peekLast();
             visited[current.x][current.y] = true;
 
-            if(current.x == height - 1 && current.y == width - 1) {
+            if (current.x == height - 1 && current.y == width - 1) {
                 break;
             }
 
             boolean flag = false;
-            for(int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 int nRow = neighbors[i][0] + current.x, nCol = neighbors[i][1] + current.y;
-                if(nRow >= 0 && nRow < height && nCol >= 0 && nCol < width && !visited[nRow][nCol] && maze[nRow][nCol] == 0) {
+                if (nRow >= 0 && nRow < height && nCol >= 0 && nCol < width && !visited[nRow][nCol] && maze[nRow][nCol] == 0) {
                     deque.addLast(new Pair(nRow, nCol));
                     flag = true;
                     break;
                 }
             }
 
-            if(!flag) {
+            if (!flag) {
                 deque.removeLast();
             }
         }
 
         System.out.println("results:");
         while(!deque.isEmpty()) {
-            Pair coord = deque.pollFirst();
-            System.out.printf("(%d,%d) ", coord.x, coord.y);
+            Pair node = deque.pollFirst();
+            System.out.printf("(%d,%d) ", node.x, node.y);
         }
     }
 
@@ -135,21 +135,20 @@ public class Labyrinth {
             }
         }
 
-        int[][] a = new int[height * width][3];
-        a[0][0] = 0;
-        a[0][1] = 0;
-        a[0][2] = -1;
-        int n = 0, m = 1;
+        int[][] a = new int[height * width][3]; // array of nodes where to go next
+        a[0][0] = 0; // starting position x
+        a[0][1] = 0; // starting position y
+        a[0][2] = -1; // shows what node lead to current node (first node has -1)
+        int n = 0, m = 1; // n - current processed node, m - empty cell
         visited[0][0] = true;
 
-        while(true) {
+        while(n < m) {
             Pair current = new Pair(a[n][0], a[n][1]);
 
             if(current.x == height - 1 && current.y == width - 1) {
                 break;
             }
 
-            boolean flag = false;
             for(int i = 0; i < 4; i++) {
                 int nRow = neighbors[i][0] + current.x, nCol = neighbors[i][1] + current.y;
                 if(nRow >= 0 && nRow < height && nCol >= 0 && nCol < width && !visited[nRow][nCol] && maze[nRow][nCol] == 0) {
@@ -165,21 +164,30 @@ public class Labyrinth {
             n++;
         }
 
-        System.out.println("results:");
-
-        LinkedList<Pair> outputList = new LinkedList<>();
-        int mm = a[n][2];
-        Pair coord = new Pair(a[n][0], a[n][1]);
-        while(mm != -1) {
-            outputList.add(new Pair(coord.x, coord.y));
-            coord = new Pair(a[mm][0], a[mm][1]);
-            mm = a[mm][2];
+        if(n >= m) {
+            // path does not exist
+            System.out.println("ceļa nav?");
+            return;
         }
-        outputList.add(new Pair(0, 0));
 
+        // Reconstruct the path
+        LinkedList<Pair> outputList = new LinkedList<>();
+        {
+            Pair node = new Pair(a[n][0], a[n][1]);
+            int mm = a[n][2];
+            while(mm != -1) {
+                outputList.add(new Pair(node.x, node.y));
+                node = new Pair(a[mm][0], a[mm][1]);
+                mm = a[mm][2];
+            }
+            outputList.add(new Pair(0, 0));
+        }
+
+        // Output in reverse order
+        System.out.println("results:");
         while(!outputList.isEmpty()) {
-            coord = outputList.pollLast();
-            System.out.printf("(%d,%d) ", coord.x, coord.y);
+            Pair node = outputList.pollLast();
+            System.out.printf("(%d,%d) ", node.x, node.y);
         }
     }
 
