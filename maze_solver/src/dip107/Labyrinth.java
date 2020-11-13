@@ -135,15 +135,15 @@ public class Labyrinth {
             }
         }
 
-        int[][] a = new int[height * width][3]; // array of nodes where to go next
-        a[0][0] = 0; // starting position x
-        a[0][1] = 0; // starting position y
-        a[0][2] = -1; // shows what node lead to current node (first node has -1)
+        int[][] nextMoves = new int[height * width][3]; // array of nodes where to go next
+        nextMoves[0][0] = 0; // starting position x
+        nextMoves[0][1] = 0; // starting position y
+        nextMoves[0][2] = -1; // shows what node lead to current node (first node has -1)
         int n = 0, m = 1; // n - current processed node, m - empty cell
         visited[0][0] = true;
 
         while(n < m) {
-            Pair current = new Pair(a[n][0], a[n][1]);
+            Pair current = new Pair(nextMoves[n][0], nextMoves[n][1]);
 
             if(current.x == height - 1 && current.y == width - 1) {
                 break;
@@ -152,9 +152,9 @@ public class Labyrinth {
             for(int i = 0; i < 4; i++) {
                 int nRow = neighbors[i][0] + current.x, nCol = neighbors[i][1] + current.y;
                 if(nRow >= 0 && nRow < height && nCol >= 0 && nCol < width && !visited[nRow][nCol] && maze[nRow][nCol] == 0) {
-                    a[m][0] = nRow;
-                    a[m][1] = nCol;
-                    a[m][2] = n;
+                    nextMoves[m][0] = nRow;
+                    nextMoves[m][1] = nCol;
+                    nextMoves[m][2] = n;
                     m++;
                     visited[nRow][nCol] = true;
                     weight[nRow][nCol] = weight[current.x][current.y] + 1;
@@ -173,12 +173,12 @@ public class Labyrinth {
         // Reconstruct the path
         LinkedList<Pair> outputList = new LinkedList<>();
         {
-            Pair node = new Pair(a[n][0], a[n][1]);
-            int mm = a[n][2];
-            while(mm != -1) {
+            Pair node = new Pair(nextMoves[n][0], nextMoves[n][1]);
+            int previousNodeIdx = nextMoves[n][2];
+            while(previousNodeIdx != -1) {
                 outputList.add(new Pair(node.x, node.y));
-                node = new Pair(a[mm][0], a[mm][1]);
-                mm = a[mm][2];
+                node = new Pair(nextMoves[previousNodeIdx][0], nextMoves[previousNodeIdx][1]);
+                previousNodeIdx = nextMoves[previousNodeIdx][2];
             }
             outputList.add(new Pair(0, 0));
         }
