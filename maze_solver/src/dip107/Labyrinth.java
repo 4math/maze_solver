@@ -248,11 +248,36 @@ public class Labyrinth {
         System.out.println("results:");
         while(!outputList.isEmpty()) {
             Pair node = outputList.pollLast();
+            maze[node.x][node.y] = 2;
             System.out.printf("(%d,%d) ", node.x, node.y);
         }
     }
 
     public void solveAStar() {
 
+    }
+
+
+    public void prettyPrint() {
+        for (int i = 0; i < height + 2; i++) {
+            for (int j = 0; j < width + 1; j++) {
+                if (i == 0 || i == height + 1) {
+                    System.out.print("#");
+                }
+                if (i > 0 && i < height + 1 && j > 0 && j < width + 1) {
+                    if (maze[i - 1][j - 1] == 0) {
+                        System.out.print(" ");
+                    } else if (maze[i - 1][j - 1] == 2) {
+                        System.out.print("\033[1;31m" + "*" + "\033[0m");
+                    } else {
+                        System.out.print("#");
+                    }
+                }
+                if (j == 0 || j == width && i != 0 && i != height + 1) {
+                    System.out.print("#");
+                }
+            }
+            System.out.println();
+        }
     }
 }

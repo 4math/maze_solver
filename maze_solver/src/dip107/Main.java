@@ -35,7 +35,7 @@ public class Main {
                         lab.createPrims(row, col, 0);
                         break;
                     case 2:
-                        lab.createRDFS(row, col, 0);
+                        lab.createRDFS(row, col);
                         break;
                 }
 
@@ -84,9 +84,11 @@ public class Main {
             switch (solveMethod) {
                 case 1:
                     lab.solveDFS();
+                    lab.prettyPrint();
                     break;
                 case 2:
                     lab.solveBFS();
+                    lab.prettyPrint();
                     break;
                 case 3:
                     break;
