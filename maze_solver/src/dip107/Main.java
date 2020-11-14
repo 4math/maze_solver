@@ -1,5 +1,6 @@
 package dip107;
 
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
@@ -35,7 +36,7 @@ public class Main {
                         lab.createPrims(row, col, 0);
                         break;
                     case 2:
-                        lab.createRDFS(row, col);
+                        lab.createRDFS(row, col, 11);
                         break;
                 }
 
@@ -91,6 +92,12 @@ public class Main {
                     lab.prettyPrint();
                     break;
                 case 3:
+                    LinkedList<Pair> path = lab.solveAStar();
+                    for (Pair pair : path) {
+                        System.out.print(pair.x + " " + pair.y + " - ");
+                    }
+                    System.out.println();
+                    lab.prettyPrint();
                     break;
                 default:
                     System.out.println("Incorrect input");
