@@ -35,8 +35,27 @@ public class Main {
                         lab.createPrims(row, col, 0);
                         break;
                     case 2:
-                        lab.createRDFS();
+                        lab.createRDFS(row, col, 0);
                         break;
+                }
+
+                for (int i = 0; i < row + 2; i++) {
+                    for (int j = 0; j < col + 1; j++) {
+                        if (i == 0 || i == row + 1) {
+                            System.out.print("#");
+                        }
+                        if (i > 0 && i < row + 1 && j > 0 && j < col + 1) {
+                            if (lab.maze[i - 1][j - 1] == 0) {
+                                System.out.print(" ");
+                            } else {
+                                System.out.print("#");
+                            }
+                        }
+                        if (j == 0 || j == col && i != 0 && i != row + 1) {
+                            System.out.print("#");
+                        }
+                    }
+                    System.out.println();
                 }
 
                 for(int r = 0; r < row; r++) {
@@ -70,6 +89,9 @@ public class Main {
                     lab.solveBFS();
                     break;
                 case 3:
+                    break;
+                default:
+                    System.out.println("Incorrect input");
                     break;
             }
 

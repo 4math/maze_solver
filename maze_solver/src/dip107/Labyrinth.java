@@ -1,8 +1,6 @@
 package dip107;
 
-import java.util.Deque;
-import java.util.Random;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Labyrinth {
 
@@ -70,8 +68,70 @@ public class Labyrinth {
         }
     }
 
-    public void createRDFS() {
+    public void createRDFS(int row, int col) {
+        Random random = new Random();
+        int seed = random.nextInt();
+        System.out.println("Seed: " + seed);
+        createRDFS(row, col, seed);
+    }
 
+    public void createRDFS(int row, int col, int seed) {
+        createEmpty(row, col);
+        Random random = new Random(seed);
+        Stack<Pair> stack = new Stack<>();
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                maze[i][j] = 1;
+            }
+        }
+
+        boolean[][] visited = new boolean[row][col];
+        stack.push(new Pair(0, 0));
+        visited[0][0] = true;
+
+        maze[0][0] = 0;
+
+        // neighbour cells positions
+        int[][] neighPos = {
+                {2, 0}, {0, -2}, {-2, 0}, {0, 2}
+        };
+
+        while(!stack.isEmpty()) {
+
+            Pair current = stack.pop();
+
+            LinkedList<Pair> neighbours = new LinkedList<>();
+            for (int k = 0; k < 4; k++) {
+                int[] pos = neighPos[k];
+                int x = current.x + pos[0];
+                int y = current.y + pos[1];
+                if (x < row && x >= 0 && y < col && y >= 0 && maze[row - 1][col - 1] == 1) {
+                    if (visited[x][y]) {
+                        continue;
+                    }
+                    neighbours.add(new Pair(x, y));
+                }
+            }
+
+            if (neighbours.size() == 0) {
+                continue;
+            }
+
+            stack.push(current);
+            maze[current.x][current.y] = 0;
+
+            int randomNeighbourIdx = random.nextInt(neighbours.size());
+            Pair randomNeighbour = neighbours.get(randomNeighbourIdx);
+            stack.push(randomNeighbour);
+
+            Pair wall = new Pair((randomNeighbour.x + current.x) / 2, (randomNeighbour.y + current.y)/ 2);
+            visited[wall.x][wall.y] = true;
+            visited[randomNeighbour.x][randomNeighbour.y] = true;
+
+            maze[randomNeighbour.x][randomNeighbour.y] = 0;
+            maze[wall.x][wall.y] = 0;
+        }
     }
 
     public void solveDFS() {
@@ -92,6 +152,7 @@ public class Labyrinth {
 
         while(true) {
             Pair current = deque.peekLast();
+            assert current != null;
             visited[current.x][current.y] = true;
 
             if (current.x == height - 1 && current.y == width - 1) {
