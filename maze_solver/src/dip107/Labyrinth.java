@@ -276,20 +276,27 @@ public class Labyrinth {
 
         HashMap<Pair, Pair> cameFrom = new HashMap<>();
 
-        HashMap<Pair, Double> gScore = new HashMap<>();
-        fillHashmap(gScore);
-        gScore.replace(start, 0.0);
+//        HashMap<Pair, Double> gScore = new HashMap<>();
+//        fillHashmap(gScore);
+//        gScore.replace(start, 0.0);
+        double[][] gScore = new double[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                gScore[i][j] = Double.POSITIVE_INFINITY;
+            }
+        }
+        gScore[0][0] = 0.0;
 
-        HashMap<Pair, Double> fScore = new HashMap<>();
-        fillHashmap(fScore);
-        fScore.replace(start, h(start, end));
+//        HashMap<Pair, Double> fScore = new HashMap<>();
+//        fillHashmap(fScore);
+//        fScore.replace(start, h(start, end));
 
         int[][] directions = {
                 {1, 0}, {-1, 0}, {0, 1}, {0, -1}
         };
 
         while (!openSet.isEmpty()) {
-            Tuple currentTuple = openSet.peek();
+            Tuple currentTuple = openSet.peek(); // the node with the least f value
             Pair current = currentTuple.pair;
 
             if (current.equals(end)) {
@@ -300,6 +307,8 @@ public class Labyrinth {
             openSet.remove(currentTuple);
             closedSet.add(current);
 
+            ArrayList<Pair> neighbors = new ArrayList<>();
+
             for (int[] direction : directions) {
                 int x = current.x + direction[0];
                 int y = current.y + direction[1];
@@ -307,25 +316,36 @@ public class Labyrinth {
                 if (x < 0 || y < 0 || x > height - 1 || y > width - 1 || maze[x][y] == 1 || closedSet.contains(neighbor)) {
                     continue;
                 }
+                neighbors.add(neighbor);
+            }
+
+            for (Pair neighbor : neighbors) {
 
 //                int d = Math.abs(current.x - neighbor.x) + Math.abs(current.y - neighbor.y); // Manhattan distance
-                int d = 1;
-                double tentativegScore = gScore.get(current) + d;
+                int d = 1; // distance to the neighbor cell from the last cell
+//                double tentativegScore = gScore.get(current) + d;
+//                double f = gScore.get(neighbor) + h(neighbor, end);
 
-                if (!openSet.contains(neighbor) || tentativegScore < gScore.get(neighbor)) {
+                double g = gScore[current.x][current.y];
+                double tentativegScore = g + d;
+                double f = g + h(neighbor, end);
+                Tuple neighborTuple = new Tuple(neighbor, f);
+
+//                if (!openSet.contains(neighborTuple) || tentativegScore < gScore.get(neighbor)) {
+                if (!openSet.contains(neighborTuple) || tentativegScore < g) {
 //                    maze[neighbor.x][neighbor.y] = 2;
 //                    System.out.println();
 //                    prettyPrint();
+
                     cameFrom.put(neighbor, current);
 
-                    gScore.replace(neighbor, tentativegScore);
+//                    gScore.replace(neighbor, tentativegScore);
+                    gScore[neighbor.x][neighbor.y] = tentativegScore;
 
-                    double f = gScore.get(neighbor) + h(neighbor, end);
-                    fScore.replace(neighbor, f);
+//                    fScore.replace(neighbor, f);
 
-                    Tuple neighborTup = new Tuple(neighbor, f);
-                    if (!openSet.contains(neighborTup)) {
-                        openSet.add(neighborTup);
+                    if (!openSet.contains(neighborTuple)) {
+                        openSet.add(neighborTuple);
                     }
                 }
             }
@@ -390,4 +410,6 @@ public class Labyrinth {
         System.out.println("pathLength = " + pathLength);
         return totalPath;
     }
+
+
 }
