@@ -37,27 +37,29 @@ public class Main {
                         break;
                     case 2:
                         lab.createRDFS(row, col, 11);
+                        lab.prettyPrint();
                         break;
                 }
 
-                for (int i = 0; i < row + 2; i++) {
-                    for (int j = 0; j < col + 1; j++) {
-                        if (i == 0 || i == row + 1) {
-                            System.out.print("#");
-                        }
-                        if (i > 0 && i < row + 1 && j > 0 && j < col + 1) {
-                            if (lab.maze[i - 1][j - 1] == 0) {
-                                System.out.print(" ");
-                            } else {
-                                System.out.print("#");
-                            }
-                        }
-                        if (j == 0 || j == col && i != 0 && i != row + 1) {
-                            System.out.print("#");
-                        }
-                    }
-                    System.out.println();
-                }
+//                for (int i = 0; i < row + 2; i++) {
+//                    for (int j = 0; j < col + 1; j++) {
+//                        if (i == 0 || i == row + 1) {
+//                            System.out.print("#");
+//                        }
+//                        if (i > 0 && i < row + 1 && j > 0 && j < col + 1) {
+//                            if (lab.maze[i - 1][j - 1] == 0) {
+//                                System.out.print(" ");
+//                            } else {
+//                                System.out.print("#");
+//                            }
+//                        }
+//                        if (j == 0 || j == col && i != 0 && i != row + 1) {
+//                            System.out.print("#");
+//                        }
+//                    }
+//                    System.out.println();
+//                }
+//                lab.prettyPrint();
 
                 for(int r = 0; r < row; r++) {
                     for(int c = 0; c < col; c++) {
@@ -82,21 +84,31 @@ public class Main {
             System.out.print("method number (1-3):");
             solveMethod = sc.nextInt();
 
+            long timeResult;
             switch (solveMethod) {
                 case 1:
-                    lab.solveDFS();
-                    lab.prettyPrint();
+                    Test testDFS = lab::solveDFS;
+                    timeResult = Testing.exectuionTime(testDFS);
+                    System.out.println();
+                    System.out.println("timeResult = " + timeResult);
+//                    lab.prettyPrint();
                     break;
                 case 2:
-                    lab.solveBFS();
-                    lab.prettyPrint();
+                    Test testBFS = lab::solveBFS;
+                    timeResult = Testing.exectuionTime(testBFS);
+                    System.out.println();
+                    System.out.println("timeResult = " + timeResult);
+//                    lab.prettyPrint();
                     break;
                 case 3:
-                    LinkedList<Pair> path = lab.solveAStar();
-                    for (Pair pair : path) {
-                        System.out.print(pair.x + " " + pair.y + " - ");
-                    }
-                    System.out.println();
+                    Test testAStar = lab::solveAStar;
+                    timeResult = Testing.exectuionTime(testAStar);
+                    System.out.println("timeResult = " + timeResult);
+//                    LinkedList<Pair> path = lab.solveAStar();
+//                    for (Pair pair : path) {
+//                        System.out.print(pair.x + " " + pair.y + " - ");
+//                    }
+//                    System.out.println();
                     lab.prettyPrint();
                     break;
                 default:
