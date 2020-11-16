@@ -56,6 +56,11 @@ public class Labyrinth {
             Pair neighborCell = neighborList.get(randomNeighborIdx);
             maze[(frontierCell.x + neighborCell.x) / 2][(frontierCell.y + neighborCell.y) / 2] = 0;
 
+//             additional empty spaces
+            int randomNeighborIdx2 = random.nextInt(neighborList.size());
+            Pair neighborCell2 = neighborList.get(randomNeighborIdx2);
+            maze[(frontierCell.x + neighborCell2.x) / 2][(frontierCell.y + neighborCell2.y) / 2] = 0;
+
             for (int i = 0; i < 4; i++) { // Compute next frontiers
                 int nRow = neighbors[i][0] + frontierCell.x, nCol = neighbors[i][1] + frontierCell.y;
                 if (nRow >= 0 && nRow < row && nCol >= 0 && nCol < col && maze[nRow][nCol] == 1) {
@@ -126,6 +131,16 @@ public class Labyrinth {
             Pair randomNeighbour = neighbours.get(randomNeighbourIdx);
             stack.push(randomNeighbour);
 
+//            int randomNeighbourIdx1 = random.nextInt(neighbours.size());
+//            Pair randomNeighbour1 = neighbours.get(randomNeighbourIdx1);
+//            stack.push(randomNeighbour1);
+
+            // additional wall emptiness
+//            Pair wall1 = new Pair((randomNeighbour1.x + current.x) / 2, (randomNeighbour1.y + current.y) / 2);
+//            visited[wall1.x][wall1.y] = true;
+//            visited[randomNeighbour1.x][randomNeighbour1.y] = true;
+//            maze[wall1.x][wall1.y] = 0;
+
             Pair wall = new Pair((randomNeighbour.x + current.x) / 2, (randomNeighbour.y + current.y) / 2);
             visited[wall.x][wall.y] = true;
             visited[randomNeighbour.x][randomNeighbour.y] = true;
@@ -180,10 +195,10 @@ public class Labyrinth {
         while (!deque.isEmpty()) {
             Pair node = deque.pollFirst();
             maze[node.x][node.y] = 2;
-            System.out.printf("(%d,%d) ", node.x, node.y);
+//            System.out.printf("(%d,%d) ", node.x, node.y);
             pathLength++;
         }
-        System.out.println();
+//        System.out.println();
         System.out.println("pathLength = " + pathLength);
     }
 
@@ -256,15 +271,16 @@ public class Labyrinth {
         while (!outputList.isEmpty()) {
             Pair node = outputList.pollLast();
             maze[node.x][node.y] = 2;
-            System.out.printf("(%d,%d) ", node.x, node.y);
+//            System.out.printf("(%d,%d) ", node.x, node.y);
             pathLength++;
         }
-        System.out.println();
+//        System.out.println();
         System.out.println("pathLength = " + pathLength);
     }
 
     public LinkedList<Pair> solveAStar() {
         LinkedList<Pair> path = new LinkedList<>();
+
         boolean isEndReached = false;
         Pair start = new Pair(0, 0);
         Pair end = new Pair(height - 1, width - 1);
@@ -272,13 +288,19 @@ public class Labyrinth {
         PriorityQueue<Tuple> openSet = new PriorityQueue<>(new TupleComparator());
         openSet.add(new Tuple(start, h(start, end)));
 
-        HashSet<Pair> closedSet = new HashSet<>();
+        boolean[][] closedSet = new boolean[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                closedSet[i][j] = false;
+            }
+        }
 
-        HashMap<Pair, Pair> cameFrom = new HashMap<>();
+//        HashMap<Pair, Pair> cameFrom = new HashMap<>();
+//        TupleWithIdx[] cameFrom = new TupleWithIdx[height * width];
+//        cameFrom[0] = new TupleWithIdx(start, -1);
+        Pair[][] cameFrom = new Pair[height][width];
+        cameFrom[0][0] = new Pair(-1, -1);
 
-//        HashMap<Pair, Double> gScore = new HashMap<>();
-//        fillHashmap(gScore);
-//        gScore.replace(start, 0.0);
         double[][] gScore = new double[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -287,25 +309,21 @@ public class Labyrinth {
         }
         gScore[0][0] = 0.0;
 
-//        HashMap<Pair, Double> fScore = new HashMap<>();
-//        fillHashmap(fScore);
-//        fScore.replace(start, h(start, end));
-
         int[][] directions = {
                 {1, 0}, {-1, 0}, {0, 1}, {0, -1}
         };
 
         while (!openSet.isEmpty()) {
-            Tuple currentTuple = openSet.peek(); // the node with the least f value
+            Tuple currentTuple = openSet.poll(); // the node with the least f value
             Pair current = currentTuple.pair;
 
             if (current.equals(end)) {
                 path = reconstructPath(cameFrom, current);
+//                cameFrom.addFirst(start);
                 isEndReached = true;
                 break;
             }
-            openSet.remove(currentTuple);
-            closedSet.add(current);
+            closedSet[current.x][current.y] = true;
 
             ArrayList<Pair> neighbors = new ArrayList<>();
 
@@ -313,7 +331,7 @@ public class Labyrinth {
                 int x = current.x + direction[0];
                 int y = current.y + direction[1];
                 Pair neighbor = new Pair(x, y);
-                if (x < 0 || y < 0 || x > height - 1 || y > width - 1 || maze[x][y] == 1 || closedSet.contains(neighbor)) {
+                if (x < 0 || y < 0 || x > height - 1 || y > width - 1 || maze[x][y] == 1 || closedSet[neighbor.x][neighbor.y]) {
                     continue;
                 }
                 neighbors.add(neighbor);
@@ -321,32 +339,26 @@ public class Labyrinth {
 
             for (Pair neighbor : neighbors) {
 
-//                int d = Math.abs(current.x - neighbor.x) + Math.abs(current.y - neighbor.y); // Manhattan distance
                 int d = 1; // distance to the neighbor cell from the last cell
-//                double tentativegScore = gScore.get(current) + d;
-//                double f = gScore.get(neighbor) + h(neighbor, end);
 
                 double g = gScore[current.x][current.y];
                 double tentativegScore = g + d;
-                double f = g + h(neighbor, end);
+                double f = tentativegScore + h(neighbor, end);
+//                double f = h(neighbor, end); // best first search
                 Tuple neighborTuple = new Tuple(neighbor, f);
 
-//                if (!openSet.contains(neighborTuple) || tentativegScore < gScore.get(neighbor)) {
                 if (!openSet.contains(neighborTuple) || tentativegScore < g) {
 //                    maze[neighbor.x][neighbor.y] = 2;
 //                    System.out.println();
 //                    prettyPrint();
+//                    int idx = current.x * width + current.y;
+//                    int neighborIdx = neighbor.x * width + neighbor.y;
+//                    cameFrom[neighborIdx] = new TupleWithIdx(neighbor, idx);
+                    cameFrom[neighbor.x][neighbor.y] = current;
 
-                    cameFrom.put(neighbor, current);
-
-//                    gScore.replace(neighbor, tentativegScore);
                     gScore[neighbor.x][neighbor.y] = tentativegScore;
 
-//                    fScore.replace(neighbor, f);
-
-                    if (!openSet.contains(neighborTuple)) {
-                        openSet.add(neighborTuple);
-                    }
+                    openSet.add(neighborTuple);
                 }
             }
         }
@@ -380,36 +392,60 @@ public class Labyrinth {
         }
     }
 
-    private void fillHashmap(HashMap<Pair, Double> map) {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                map.put(new Pair(i, j), Double.POSITIVE_INFINITY);
-            }
-        }
-    }
 
     // heuristic function for A* using Euclidean distance
     private double h(Pair currentNode, Pair endNode) {
         Pair vector = new Pair(endNode.x - currentNode.x, endNode.y - currentNode.y);
         return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
-//        double d = Math.abs(currentNode.x - endNode.x) + Math.abs(currentNode.y - endNode.y);
-//        return d;
+//        Pair vector = new Pair(endNode.x - currentNode.x, endNode.y - currentNode.y);
+//        return Math.abs(vector.x) + Math.abs(vector.y);
     }
 
     private LinkedList<Pair> reconstructPath(HashMap<Pair, Pair> cameFrom, Pair current) {
         int pathLength = 1;
+
         LinkedList<Pair> totalPath = new LinkedList<>();
+
         totalPath.addFirst(current);
+
         maze[current.x][current.y] = 2;
         while (cameFrom.containsKey(current)) {
             current = cameFrom.get(current);
             totalPath.addFirst(current);
+
+            maze[current.x][current.y] = 2;
+            pathLength++;
+        }
+        System.out.println("pathLength = " + pathLength);
+
+        return totalPath;
+    }
+
+
+    private LinkedList<Pair> reconstructPath(Pair[][] cameFrom, Pair current) {
+        int pathLength = 1;
+
+        LinkedList<Pair> totalPath = new LinkedList<>();
+
+        totalPath.addFirst(current);
+
+        maze[current.x][current.y] = 2;
+
+        int i = current.x;
+        int j = current.y;
+
+        while (!cameFrom[i][j].equals(new Pair(-1, -1))) {
+            current = cameFrom[i][j];
+            i = current.x;
+            j = current.y;
+//            System.out.printf(" (%d, %d) ", current.x, current.y);
+
+            totalPath.addFirst(current);
+
             maze[current.x][current.y] = 2;
             pathLength++;
         }
         System.out.println("pathLength = " + pathLength);
         return totalPath;
     }
-
-
 }

@@ -34,43 +34,26 @@ public class Main {
                 switch (genMethod) {
                     case 1:
                         lab.createPrims(row, col, 0);
+                        lab.prettyPrint();
                         break;
                     case 2:
                         lab.createRDFS(row, col, 11);
-                        lab.prettyPrint();
+//                        lab.prettyPrint();
                         break;
                 }
 
-//                for (int i = 0; i < row + 2; i++) {
-//                    for (int j = 0; j < col + 1; j++) {
-//                        if (i == 0 || i == row + 1) {
-//                            System.out.print("#");
-//                        }
-//                        if (i > 0 && i < row + 1 && j > 0 && j < col + 1) {
-//                            if (lab.maze[i - 1][j - 1] == 0) {
-//                                System.out.print(" ");
-//                            } else {
-//                                System.out.print("#");
-//                            }
-//                        }
-//                        if (j == 0 || j == col && i != 0 && i != row + 1) {
-//                            System.out.print("#");
+//                lab.prettyPrint();
+
+//                for(int r = 0; r < row; r++) {
+//                    for(int c = 0; c < col; c++) {
+//                        if(lab.maze[r][c] == 0) {
+//                            System.out.print("░");
+//                        } else {
+//                            System.out.print("█");
 //                        }
 //                    }
 //                    System.out.println();
 //                }
-//                lab.prettyPrint();
-
-                for(int r = 0; r < row; r++) {
-                    for(int c = 0; c < col; c++) {
-                        if(lab.maze[r][c] == 0) {
-                            System.out.print("░");
-                        } else {
-                            System.out.print("█");
-                        }
-                    }
-                    System.out.println();
-                }
             }
             else {
                 // error
@@ -104,11 +87,6 @@ public class Main {
                     Test testAStar = lab::solveAStar;
                     timeResult = Testing.exectuionTime(testAStar);
                     System.out.println("timeResult = " + timeResult);
-//                    LinkedList<Pair> path = lab.solveAStar();
-//                    for (Pair pair : path) {
-//                        System.out.print(pair.x + " " + pair.y + " - ");
-//                    }
-//                    System.out.println();
                     lab.prettyPrint();
                     break;
                 default:
