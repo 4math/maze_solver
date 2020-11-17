@@ -34,7 +34,7 @@ public class Main {
                 switch (genMethod) {
                     case 1:
                         lab.createPrims(row, col, 0);
-                        lab.prettyPrint();
+//                        lab.prettyPrint();
                         break;
                     case 2:
                         lab.createRDFS(row, col, 11);
@@ -81,13 +81,13 @@ public class Main {
                     timeResult = Testing.exectuionTime(testBFS);
                     System.out.println();
                     System.out.println("timeResult = " + timeResult);
-                    lab.prettyPrint();
+//                    lab.prettyPrint();
                     break;
                 case 3:
                     Test testAStar = lab::solveAStar;
                     timeResult = Testing.exectuionTime(testAStar);
                     System.out.println("timeResult = " + timeResult);
-                    lab.prettyPrint();
+//                    lab.prettyPrint();
                     break;
                 default:
                     System.out.println("Incorrect input");

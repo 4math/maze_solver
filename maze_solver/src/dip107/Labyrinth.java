@@ -308,14 +308,13 @@ public class Labyrinth {
         while (!openSet.isEmpty()) {
             Tuple currentTuple = openSet.poll(); // the node with the least f value
             Pair current = currentTuple.pair;
+            closedSet[current.x][current.y] = true;
 
             if (current.equals(end)) {
                 path = reconstructPath(cameFrom, current);
                 isEndReached = true;
                 break;
             }
-            closedSet[current.x][current.y] = true;
-
 
             for (int[] direction : directions) {
                 int x = current.x + direction[0];
@@ -329,20 +328,21 @@ public class Labyrinth {
 
                 double gCurrent = gScore[current.x][current.y];
                 double tentativegScore = gCurrent + d;
-                double f = gCurrent + h(neighbor, end) * 1.05; // heuristically found value 1.05, so that A* could faster find appropriate ending node
-//                double f = h(neighbor, end); // best first search
-                Tuple neighborTuple = new Tuple(neighbor, f);
 
-                if (!openSet.contains(neighborTuple) || tentativegScore < gScore[neighbor.x][neighbor.y]) {
+                if (tentativegScore < gScore[neighbor.x][neighbor.y]) {
 //                    maze[neighbor.x][neighbor.y] = 2;
 //                    System.out.println();
 //                    prettyPrint();
+
+                    double f = tentativegScore + h(neighbor, end) * 1.1;  // heuristically found value 1.05, so that A* could faster find appropriate ending node
+//                    double f = h(neighbor, end); // best first search
+                    Tuple neighborTuple = new Tuple(neighbor, f);
 
                     cameFrom[neighbor.x][neighbor.y] = current;
 
                     gScore[neighbor.x][neighbor.y] = tentativegScore;
 
-                    if(!openSet.contains(neighborTuple)) {
+                    if (!openSet.contains(neighborTuple)) {
                         openSet.add(neighborTuple);
                     }
                 }
