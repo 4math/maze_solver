@@ -9,5 +9,20 @@ public class Tuple {
         this.pair = pair;
         this.f = f;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Tuple other = (Tuple) obj;
+        return this.pair.equals(other.pair) && Math.abs(other.f - this.f) <= 1e-8;
+    }
 }
 
