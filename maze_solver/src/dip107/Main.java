@@ -23,6 +23,18 @@ public class Main {
 
             if (ans == 'n') {
                 // manual labyrinth creation
+                // TODO: validate input
+                int[][] maze = new int[row][col];
+                int answer;
+                for (int i = 0; i < row; i++) {
+                    for (int j = 0; j < col; j++) {
+                        answer = sc.nextInt();
+                        maze[i][j] = answer;
+                    }
+                }
+                lab.maze = maze;
+                lab.width = col;
+                lab.height = row;
             } else if (ans == 'y') {
                 // generate maze
                 // choose generation method
@@ -42,8 +54,6 @@ public class Main {
                         break;
                 }
 
-//                lab.prettyPrint();
-
 //                for(int r = 0; r < row; r++) {
 //                    for(int c = 0; c < col; c++) {
 //                        if(lab.maze[r][c] == 0) {
@@ -60,7 +70,7 @@ public class Main {
                 throw new Exception("Not your turn, ham");
             }
 
-            // check if int > 3 && < 1
+            // TODO: check if int > 3 && < 1
             System.out.println("1) DFS method");
             System.out.println("2) BFS method");
             System.out.println("3) A* method");

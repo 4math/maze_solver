@@ -1,5 +1,6 @@
 package dip107;
 
+// Tuple for Priority Queue, in order to sort comparing f value
 public class Tuple {
 
     public final Pair pair;

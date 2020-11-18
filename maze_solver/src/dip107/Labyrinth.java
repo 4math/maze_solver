@@ -81,7 +81,7 @@ public class Labyrinth {
     }
 
     public void createRDFS(int row, int col, int seed) {
-        createEmpty(row, col);
+        createEmpty(row, col); // creating an empty maze
         Random random = new Random(seed);
         Stack<Pair> stack = new Stack<>();
 
@@ -112,7 +112,7 @@ public class Labyrinth {
                 int[] pos = neighPos[k];
                 int x = current.x + pos[0];
                 int y = current.y + pos[1];
-                if (x < row && x >= 0 && y < col && y >= 0 && maze[row - 1][col - 1] == 0) {
+                if (x < row && x >= 0 && y < col && y >= 0) {
                     if (visited[x][y]) {
                         continue;
                     }
@@ -131,11 +131,11 @@ public class Labyrinth {
             Pair randomNeighbour = neighbours.get(randomNeighbourIdx);
             stack.push(randomNeighbour);
 
+            // additional empty spaces for walls
 //            int randomNeighbourIdx1 = random.nextInt(neighbours.size());
 //            Pair randomNeighbour1 = neighbours.get(randomNeighbourIdx1);
 //            stack.push(randomNeighbour1);
 
-            // additional wall emptiness
 //            Pair wall1 = new Pair((randomNeighbour1.x + current.x) / 2, (randomNeighbour1.y + current.y) / 2);
 //            visited[wall1.x][wall1.y] = true;
 //            visited[randomNeighbour1.x][randomNeighbour1.y] = true;
@@ -285,14 +285,20 @@ public class Labyrinth {
         Pair start = new Pair(0, 0);
         Pair end = new Pair(height - 1, width - 1);
 
+        // A set where nodes are being processed
         PriorityQueue<Tuple> openSet = new PriorityQueue<>(new TupleComparator());
         openSet.add(new Tuple(start, h(start, end)));
 
+        // A set which holds already seen nodes
         boolean[][] closedSet = new boolean[height][width];
 
+        // An array to reconstruct path. Indices(i, j) show the position of the next node, but the value
+        // is the previous node
+        // For example, start(0, 0) is the next node, but the previous node is (-1, -1), i.e. there is no previous node
         Pair[][] cameFrom = new Pair[height][width];
         cameFrom[0][0] = new Pair(-1, -1);
 
+        // An array to hold the g values of nodes
         double[][] gScore = new double[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -302,11 +308,12 @@ public class Labyrinth {
         gScore[0][0] = 0.0;
 
         int[][] directions = {
+                // South, North, East, West
                 {1, 0}, {-1, 0}, {0, 1}, {0, -1}
         };
 
         while (!openSet.isEmpty()) {
-            Tuple currentTuple = openSet.poll(); // the node with the least f value
+            Tuple currentTuple = openSet.poll(); // fetching the node with the least f value
             Pair current = currentTuple.pair;
             closedSet[current.x][current.y] = true;
 
@@ -324,7 +331,8 @@ public class Labyrinth {
                 }
                 Pair neighbor = new Pair(x, y);
 
-                int d = 1; // distance to the neighbor cell from the last cell
+                // distance to the neighbor node from the current node, it is always 1, since there are no diagonal neighbors
+                int d = 1;
 
                 double gCurrent = gScore[current.x][current.y];
                 double tentativegScore = gCurrent + d;
@@ -334,17 +342,18 @@ public class Labyrinth {
 //                    System.out.println();
 //                    prettyPrint();
 
-                    double f = tentativegScore + h(neighbor, end) * 1.1;  // heuristically found value 1.05, so that A* could faster find appropriate ending node
-//                    double f = h(neighbor, end); // best first search
+                    // f(n) = g(n) + h(n)
+                    // empirically found that value about sqrt(2) is optimal,
+                    // so that A* could faster find appropriate ending node
+                    double f = tentativegScore + h(neighbor, end) * 1.41;
+//                    double f = h(neighbor, end); // it will be best-first search
                     Tuple neighborTuple = new Tuple(neighbor, f);
 
                     cameFrom[neighbor.x][neighbor.y] = current;
 
                     gScore[neighbor.x][neighbor.y] = tentativegScore;
 
-                    if (!openSet.contains(neighborTuple)) {
-                        openSet.add(neighborTuple);
-                    }
+                    openSet.add(neighborTuple);
                 }
             }
         }
@@ -367,7 +376,7 @@ public class Labyrinth {
                     switch (maze[i - 1][j - 1]) {
                         case 0 -> System.out.print(" ");
                         case 1 -> System.out.print("#");
-                        case 2 -> System.out.print("\033[1;31m" + "*" + "\033[0m");
+                        case 2 -> System.out.print("\033[1;31m" + "*" + "\033[0m"); // red color for found path
                     }
                 }
                 if (j == 0 || j == width && i != 0 && i != height + 1) {
