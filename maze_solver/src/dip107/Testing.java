@@ -12,6 +12,6 @@ public class Testing {
         long end = System.nanoTime();
 
         long timeElapsed = end - start;
-        return timeElapsed / 1000000;
+        return timeElapsed / 1000;
     }
 }
