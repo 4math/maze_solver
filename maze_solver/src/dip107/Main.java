@@ -11,6 +11,29 @@ public class Main {
         char ans;
         try {
             Scanner sc = new Scanner(System.in);
+
+            int[][] sizes = {{11, 11}, {101, 101}, {501, 501}, {751, 751}, {1001, 1001}, {1251, 1251}, {1501, 1501}, {1751, 1751}, {2001, 2001},
+                    {2251, 2251}, {2501, 2501}, {2751, 2751}, {3001, 3001}, {101, 501}, {501, 101}, {1001, 2001}, {2001, 1001}, {3, 5001},
+                    {5001, 3}, {501, 1001}};
+            int cnt = 20;
+            int seed = 1;
+
+            for(int i = 0; i < cnt; i++) {
+                Labyrinth testLab = new Labyrinth();
+
+                testLab.createPrims(sizes[i][0], sizes[i][1], seed);
+
+                long start = System.nanoTime();
+                testLab.solveAStar();
+                long end = System.nanoTime();
+
+                long timeElapsed = (end - start) / 1000; // microseconds
+
+                //System.out.printf("size = (%d;%d) seed = %d time = %d %n", sizes[i][0], sizes[i][1], seed, timeElapsed);
+                //System.out.printf("%d%n", timeElapsed);
+            }
+
+
             System.out.print("row count: ");
             row = sc.nextInt();
 
@@ -45,7 +68,7 @@ public class Main {
 
                 switch (genMethod) {
                     case 1:
-                        lab.createPrims(row, col, 0);
+                        lab.createPrims(row, col, 1);
 //                        lab.prettyPrint();
                         break;
                     case 2:
