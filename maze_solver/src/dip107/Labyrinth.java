@@ -14,6 +14,16 @@ public class Labyrinth {
     }
 
     public void createPrims(int row, int col, int seed) {
+        boolean isRowEven = false;
+        boolean isColEven = false;
+        if (row % 2 == 0) {
+            row -= 1;
+            isRowEven = true;
+        }
+        if (col % 2 == 0) {
+            col -= 1;
+            isColEven = true;
+        }
         createEmpty(row, col);
         Random random = new Random(seed);
 
@@ -71,6 +81,8 @@ public class Labyrinth {
 
             frontierList.remove(randomFrontierIdx);
         }
+
+        checkEvenDimensions(row, col, isRowEven, isColEven, random);
     }
 
     public void createRDFS(int row, int col) {
@@ -81,6 +93,16 @@ public class Labyrinth {
     }
 
     public void createRDFS(int row, int col, int seed) {
+        boolean isRowEven = false;
+        boolean isColEven = false;
+        if (row % 2 == 0) {
+            row -= 1;
+            isRowEven = true;
+        }
+        if (col % 2 == 0) {
+            col -= 1;
+            isColEven = true;
+        }
         createEmpty(row, col); // creating an empty maze
         Random random = new Random(seed);
         Stack<Pair> stack = new Stack<>();
@@ -135,7 +157,7 @@ public class Labyrinth {
 //            int randomNeighbourIdx1 = random.nextInt(neighbours.size());
 //            Pair randomNeighbour1 = neighbours.get(randomNeighbourIdx1);
 //            stack.push(randomNeighbour1);
-
+//
 //            Pair wall1 = new Pair((randomNeighbour1.x + current.x) / 2, (randomNeighbour1.y + current.y) / 2);
 //            visited[wall1.x][wall1.y] = true;
 //            visited[randomNeighbour1.x][randomNeighbour1.y] = true;
@@ -147,6 +169,65 @@ public class Labyrinth {
 
             maze[randomNeighbour.x][randomNeighbour.y] = 0;
             maze[wall.x][wall.y] = 0;
+        }
+
+        checkEvenDimensions(row, col, isRowEven, isColEven, random);
+    }
+
+    private void checkEvenDimensions(int row, int col, boolean isRowEven, boolean isColEven, Random random) {
+        if (isColEven && isRowEven) {
+            int[][] newMaze = new int[row + 1][col + 1];
+
+            for (int i = 0; i < height + 1; i++) {
+                for (int j = 0; j < width + 1; j++) {
+                    if (i == height || j == width) {
+                        newMaze[i][j] = random.nextInt(2);
+                        continue;
+                    }
+                    newMaze[i][j] = maze[i][j];
+                }
+            }
+
+            newMaze[row][col] = 0;
+            newMaze[row][col - 1] = 0;
+            newMaze[row - 1][col - 1] = 0;
+            newMaze[row - 1][col] = 0;
+            width += 1;
+            height += 1;
+            this.maze = newMaze;
+        } else if (isColEven) {
+            int[][] newMaze = new int[row][col + 1];
+
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width + 1; j++) {
+                    if (j == width) {
+                        newMaze[i][j] = random.nextInt(2);
+                        continue;
+                    }
+                    newMaze[i][j] = maze[i][j];
+                }
+            }
+
+            newMaze[row - 1][col] = 0;
+            width += 1;
+            this.maze = newMaze;
+        } else if (isRowEven) {
+            int[][] newMaze = new int[row + 1][col];
+
+            for (int i = 0; i < height + 1; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (i == height) {
+                        newMaze[i][j] = random.nextInt(2);
+                        continue;
+                    }
+                    newMaze[i][j] = maze[i][j];
+                }
+            }
+
+            newMaze[row][col - 1] = 0;
+            height += 1;
+            this.maze = newMaze;
+
         }
     }
 
@@ -406,7 +487,8 @@ public class Labyrinth {
         int i = current.x;
         int j = current.y;
 
-        while (!cameFrom[i][j].equals(new Pair(-1, -1))) {
+        Pair startingNode = new Pair(-1, -1);
+        while (!cameFrom[i][j].equals(startingNode)) {
             current = cameFrom[i][j];
             i = current.x;
             j = current.y;

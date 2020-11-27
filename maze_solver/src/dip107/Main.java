@@ -45,11 +45,11 @@ public class Main {
 
                 switch (genMethod) {
                     case 1:
-                        lab.createPrims(row, col, 0);
+                        lab.createPrims(row, col, 1);
 //                        lab.prettyPrint();
                         break;
                     case 2:
-                        lab.createRDFS(row, col, 11);
+                        lab.createRDFS(row, col, 3);
 //                        lab.prettyPrint();
                         break;
                 }
