@@ -72,7 +72,7 @@ public class Main {
 //                        lab.prettyPrint();
                         break;
                     case 2:
-                        lab.createRDFS(row, col, 11);
+                        lab.createRDFS(row, col, 3);
 //                        lab.prettyPrint();
                         break;
                 }
