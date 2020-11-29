@@ -1,14 +1,14 @@
 package dip107;
 
-interface Test {
+interface TimeTest {
     void test();
 }
 
-public class Testing {
+public class TimeTesting {
 
-    public static long exectuionTime(Test test) {
+    public static long executionTime(TimeTest timeTest) {
         long start = System.nanoTime();
-        test.test();
+        timeTest.test();
         long end = System.nanoTime();
 
         long timeElapsed = end - start;

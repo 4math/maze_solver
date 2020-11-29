@@ -1,6 +1,5 @@
 package dip107;
 
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
@@ -12,30 +11,46 @@ public class Main {
         try {
             Scanner sc = new Scanner(System.in);
 
-            int[][] sizes = {{11, 11}, {101, 101}, {501, 501}, {751, 751}, {1001, 1001}, {1251, 1251}, {1501, 1501}, {1751, 1751}, {2001, 2001},
-                    {2251, 2251}, {2501, 2501}, {2751, 2751}, {3001, 3001}, {101, 501}, {501, 101}, {1001, 2001}, {2001, 1001}, {3, 5001},
-                    {5001, 3}, {501, 1001}};
-            int cnt = 20;
-            int seed = 1;
-
-            for(int i = 0; i < cnt; i++) {
-                Labyrinth testLab = new Labyrinth();
-
-                testLab.createPrims(sizes[i][0], sizes[i][1], seed);
-
-                long start = System.nanoTime();
-                testLab.solveAStar();
-                long end = System.nanoTime();
-
-                long timeElapsed = (end - start) / 1000; // microseconds
-
-                //System.out.printf("size = (%d;%d) seed = %d time = %d %n", sizes[i][0], sizes[i][1], seed, timeElapsed);
-                //System.out.printf("%d%n", timeElapsed);
-            }
+//            int[][] sizes = {{11, 11}, {101, 101}, {501, 501}, {751, 751}, {1001, 1001}, {1251, 1251}, {1501, 1501}, {1751, 1751}, {2001, 2001},
+//                    {2251, 2251}, {2501, 2501}, {2751, 2751}, {3001, 3001}, {101, 501}, {501, 101}, {1001, 2001}, {2001, 1001}, {3, 5001},
+//                    {5001, 3}, {501, 1001}};
+//            int cnt = 20;
+//            int seed = 1;
+//
+//            for(int i = 0; i < cnt; i++) {
+//                Labyrinth testLab = new Labyrinth();
+//
+//                testLab.createPrims(sizes[i][0], sizes[i][1], seed);
+//
+//                long start = System.nanoTime();
+//                testLab.solveAStar();
+//                long end = System.nanoTime();
+//
+//                long timeElapsed = (end - start) / 1000; // microseconds
+//
+//                //System.out.printf("size = (%d;%d) seed = %d time = %d %n", sizes[i][0], sizes[i][1], seed, timeElapsed);
+//                //System.out.printf("%d%n", timeElapsed);
+//            }
 
 
             System.out.print("row count: ");
             row = sc.nextInt();
+
+            if (row == -1) {
+                MazeTest mazeTest = lab::createRDFS;
+                int[] seeds = {1, 2, 3};
+                TestFramework testFramework = new TestFramework(mazeTest, seeds);
+                testFramework.test();
+                testFramework.showResults();
+                return;
+            } else if(row == -2) {
+                MazeTest mazeTest = lab::createPrims;
+                int[] seeds = {1, 2, 3};
+                TestFramework testFramework = new TestFramework(mazeTest, seeds);
+                testFramework.test();
+                testFramework.showResults();
+                return;
+            }
 
             System.out.print("column count: ");
             col = sc.nextInt();
@@ -103,22 +118,22 @@ public class Main {
             long timeResult;
             switch (solveMethod) {
                 case 1:
-                    Test testDFS = lab::solveDFS;
-                    timeResult = Testing.exectuionTime(testDFS);
+                    TimeTest timeTestDFS = lab::solveDFS;
+                    timeResult = TimeTesting.executionTime(timeTestDFS);
                     System.out.println();
                     System.out.println("timeResult = " + timeResult);
 //                    lab.prettyPrint();
                     break;
                 case 2:
-                    Test testBFS = lab::solveBFS;
-                    timeResult = Testing.exectuionTime(testBFS);
+                    TimeTest timeTestBFS = lab::solveBFS;
+                    timeResult = TimeTesting.executionTime(timeTestBFS);
                     System.out.println();
                     System.out.println("timeResult = " + timeResult);
 //                    lab.prettyPrint();
                     break;
                 case 3:
-                    Test testAStar = lab::solveAStar;
-                    timeResult = Testing.exectuionTime(testAStar);
+                    TimeTest timeTestAStar = lab::solveAStar;
+                    timeResult = TimeTesting.executionTime(timeTestAStar);
                     System.out.println("timeResult = " + timeResult);
 //                    lab.prettyPrint();
                     break;

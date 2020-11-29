@@ -154,14 +154,14 @@ public class Labyrinth {
             stack.push(randomNeighbour);
 
             // additional empty spaces for walls
-//            int randomNeighbourIdx1 = random.nextInt(neighbours.size());
-//            Pair randomNeighbour1 = neighbours.get(randomNeighbourIdx1);
-//            stack.push(randomNeighbour1);
-//
-//            Pair wall1 = new Pair((randomNeighbour1.x + current.x) / 2, (randomNeighbour1.y + current.y) / 2);
-//            visited[wall1.x][wall1.y] = true;
-//            visited[randomNeighbour1.x][randomNeighbour1.y] = true;
-//            maze[wall1.x][wall1.y] = 0;
+            int randomNeighbourIdx1 = random.nextInt(neighbours.size());
+            Pair randomNeighbour1 = neighbours.get(randomNeighbourIdx1);
+            stack.push(randomNeighbour1);
+
+            Pair wall1 = new Pair((randomNeighbour1.x + current.x) / 2, (randomNeighbour1.y + current.y) / 2);
+            visited[wall1.x][wall1.y] = true;
+            visited[randomNeighbour1.x][randomNeighbour1.y] = true;
+            maze[wall1.x][wall1.y] = 0;
 
             Pair wall = new Pair((randomNeighbour.x + current.x) / 2, (randomNeighbour.y + current.y) / 2);
             visited[wall.x][wall.y] = true;
