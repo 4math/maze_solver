@@ -1,5 +1,7 @@
 package dip107;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
@@ -36,19 +38,50 @@ public class Main {
             System.out.print("row count: ");
             row = sc.nextInt();
 
+            // TODO: create menu for testing, e.i., when row == -1, create menu with testing options, e.g. test Prim or RDFS generation
             if (row == -1) {
                 MazeTest mazeTest = lab::createRDFS;
                 int[] seeds = {1, 2, 3};
-                TestFramework testFramework = new TestFramework(mazeTest, seeds);
-                testFramework.test();
-                testFramework.showResults();
+                MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
+                mazeTestFramework.test();
+                mazeTestFramework.showResults();
                 return;
-            } else if(row == -2) {
+            } else if (row == -2) {
                 MazeTest mazeTest = lab::createPrims;
                 int[] seeds = {1, 2, 3};
-                TestFramework testFramework = new TestFramework(mazeTest, seeds);
-                testFramework.test();
-                testFramework.showResults();
+                MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
+                mazeTestFramework.test();
+                mazeTestFramework.showResults();
+                return;
+            } else if (row == -3) {
+                ArrayList<MazeTest> mazes = new ArrayList<>();
+                mazes.add(lab::createRDFS);
+                mazes.add(lab::createPrims);
+                PathfindingTest pfTest = lab::solveDFS;
+                int seed = 2021;
+                PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
+                pfTestFramework.test();
+                pfTestFramework.showResults();
+                return;
+            } else if (row == -4) {
+                ArrayList<MazeTest> mazes = new ArrayList<>();
+                mazes.add(lab::createRDFS);
+                mazes.add(lab::createPrims);
+                PathfindingTest pfTest = lab::solveBFS;
+                int seed = 2021;
+                PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
+                pfTestFramework.test();
+                pfTestFramework.showResults();
+                return;
+            } else if (row == -5) {
+                ArrayList<MazeTest> mazes = new ArrayList<>();
+                mazes.add(lab::createRDFS);
+                mazes.add(lab::createPrims);
+                PathfindingTest pfTest = lab::solveAStar;
+                int seed = 2021;
+                PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
+                pfTestFramework.test();
+                pfTestFramework.showResults();
                 return;
             }
 
@@ -88,7 +121,7 @@ public class Main {
                         break;
                     case 2:
                         lab.createRDFS(row, col, 3);
-//                        lab.prettyPrint();
+                        lab.prettyPrint();
                         break;
                 }
 
@@ -102,8 +135,7 @@ public class Main {
 //                    }
 //                    System.out.println();
 //                }
-            }
-            else {
+            } else {
                 // error
                 throw new Exception("Not your turn, ham");
             }
@@ -118,24 +150,31 @@ public class Main {
             long timeResult;
             switch (solveMethod) {
                 case 1:
-                    TimeTest timeTestDFS = lab::solveDFS;
-                    timeResult = TimeTesting.executionTime(timeTestDFS);
-                    System.out.println();
-                    System.out.println("timeResult = " + timeResult);
-//                    lab.prettyPrint();
+//                    TimeTest timeTestDFS = lab::solveDFS;
+//                    timeResult = TimeTesting.executionTime(timeTestDFS);
+//                    System.out.println();
+//                    System.out.println("timeResult = " + timeResult);
+                    int pathLength = lab.solveDFS();
+                    System.out.println("path length is " + pathLength);
+                    lab.prettyPrint();
                     break;
                 case 2:
-                    TimeTest timeTestBFS = lab::solveBFS;
-                    timeResult = TimeTesting.executionTime(timeTestBFS);
-                    System.out.println();
-                    System.out.println("timeResult = " + timeResult);
+//                    TimeTest timeTestBFS = lab::solveBFS;
+//                    timeResult = TimeTesting.executionTime(timeTestBFS);
+//                    System.out.println();
+//                    System.out.println("timeResult = " + timeResult);
+                    int path = lab.solveBFS();
+                    System.out.println("path length is " + path);
 //                    lab.prettyPrint();
                     break;
                 case 3:
-                    TimeTest timeTestAStar = lab::solveAStar;
-                    timeResult = TimeTesting.executionTime(timeTestAStar);
-                    System.out.println("timeResult = " + timeResult);
-//                    lab.prettyPrint();
+//                    TimeTest timeTestAStar = lab::solveAStar;
+//                    timeResult = TimeTesting.executionTime(timeTestAStar);
+//                    System.out.println("timeResult = " + timeResult);
+//                    LinkedList<Pair> result = lab.solveAStar();
+//                    System.out.println("path length is " + result.size());
+
+                    lab.prettyPrint();
                     break;
                 default:
                     System.out.println("Incorrect input");

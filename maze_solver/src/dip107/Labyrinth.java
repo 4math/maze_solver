@@ -231,7 +231,7 @@ public class Labyrinth {
         }
     }
 
-    public void solveDFS() {
+    public int solveDFS() {
         int[][] neighbors = {
                 {-1, 0}, {+1, 0}, {0, -1}, {0, +1}
         };
@@ -271,7 +271,7 @@ public class Labyrinth {
             }
         }
 
-        System.out.println("results:");
+//        System.out.println("results:");
         int pathLength = 0;
         while (!deque.isEmpty()) {
             Pair node = deque.pollFirst();
@@ -280,10 +280,11 @@ public class Labyrinth {
             pathLength++;
         }
 //        System.out.println();
-        System.out.println("pathLength = " + pathLength);
+//        System.out.println("pathLength = " + pathLength);
+        return pathLength;
     }
 
-    public void solveBFS() {
+    public int solveBFS() {
         int[][] neighbors = {
                 {-1, 0}, {+1, 0}, {0, -1}, {0, +1}
         };
@@ -330,7 +331,7 @@ public class Labyrinth {
         if (n >= m) {
             // path does not exist
             System.out.println("ceļa nav?");
-            return;
+            return -1;
         }
 
         // Reconstruct the path
@@ -347,7 +348,7 @@ public class Labyrinth {
         }
 
         // Output in reverse order
-        System.out.println("results:");
+//        System.out.println("results:");
         int pathLength = 0;
         while (!outputList.isEmpty()) {
             Pair node = outputList.pollLast();
@@ -356,10 +357,12 @@ public class Labyrinth {
             pathLength++;
         }
 //        System.out.println();
-        System.out.println("pathLength = " + pathLength);
+//        System.out.println("pathLength = " + pathLength);
+        return pathLength;
     }
 
-    public LinkedList<Pair> solveAStar() {
+    //    public LinkedList<Pair> solveAStar() {
+    public int solveAStar() {
         LinkedList<Pair> path = new LinkedList<>();
 
         boolean isEndReached = false;
@@ -444,7 +447,7 @@ public class Labyrinth {
             System.out.println("No solution!");
         }
 
-        return path;
+        return path.size();
     }
 
     public void prettyPrint() {
@@ -476,7 +479,7 @@ public class Labyrinth {
     }
 
     private LinkedList<Pair> reconstructPath(Pair[][] cameFrom, Pair current) {
-        int pathLength = 1;
+//        int pathLength = 1;
 
         LinkedList<Pair> path = new LinkedList<>();
 
@@ -497,9 +500,9 @@ public class Labyrinth {
             path.addFirst(current);
 
             maze[current.x][current.y] = 2;
-            pathLength++;
+//            pathLength++;
         }
-        System.out.println("pathLength = " + pathLength);
+//        System.out.println("pathLength = " + pathLength);
         return path;
     }
 }

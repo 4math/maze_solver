@@ -1,10 +1,10 @@
 package dip107;
 
 interface MazeTest {
-    void testMaze(int row, int col, int seed);
+    void createMaze(int row, int col, int seed);
 }
 
-public class TestFramework {
+public class MazeTestFramework {
 
     public final int iterationCount = 5;
     // sizes of mazes. It is crucial them to be in the same order as in the Excel worksheet
@@ -23,8 +23,6 @@ public class TestFramework {
             {2001, 2001},
             {2500, 2500},
             {2501, 2501},
-            {3000, 3000},
-            {3001, 3001},
             {100, 500},
             {101, 501},
             {501, 101},
@@ -47,7 +45,7 @@ public class TestFramework {
     public MazeTest testingMethod;
     public double[][][] timeResults;
 
-    TestFramework(MazeTest mazeTest, int[] seeds) {
+    MazeTestFramework(MazeTest mazeTest, int[] seeds) {
         testingMethod = mazeTest;
         this.seeds = seeds;
         timeResults = new double[seeds.length][sizes.length][iterationCount];
@@ -60,10 +58,10 @@ public class TestFramework {
                 for (int i = 0; i < sizes.length; i++) {
                     if (j == 0) {
                         // we skip the first iteration, in order to get JVM work faster
-                        testingMethod.testMaze(sizes[i][0], sizes[i][1], seeds[k]);
+                        testingMethod.createMaze(sizes[i][0], sizes[i][1], seeds[k]);
                     } else {
                         long start = System.nanoTime();
-                        testingMethod.testMaze(sizes[i][0], sizes[i][1], seeds[k]);
+                        testingMethod.createMaze(sizes[i][0], sizes[i][1], seeds[k]);
                         long end = System.nanoTime();
 
                         double timeElapsed = (end - start) / 1000.0;
