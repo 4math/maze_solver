@@ -138,17 +138,9 @@ public class Main {
                 lab.createEmpty(row, col);
                 for (int i = 0; i < row; i++) {
                     for (int j = 0; j < col; j++) {
-                        int answer = sc.nextInt();
-                        if (answer != 0 && answer != 1) {
-                            if (--j < 0) {
-                                j = col - 1;
-                                if (--i < 0) {
-                                    i = 0;
-                                    j = 0;
-                                }
-                            }
-
-                            continue;
+                        int answer = -1;
+                        while (answer != 0 && answer != 1) {
+                            answer = sc.nextInt();
                         }
 
                         lab.maze[i][j] = answer;
