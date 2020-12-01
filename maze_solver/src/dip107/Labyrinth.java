@@ -5,13 +5,20 @@ import java.util.*;
 public class Labyrinth {
 
     public int[][] maze;
-    int width, height;
-    boolean verbose = false;
+    public int width, height;
+    public boolean verbose = false;
 
     public void createEmpty(int row, int col) {
         maze = new int[row][col];
         width = col;
         height = row;
+    }
+
+    public void createPrims(int row, int col) {
+        Random random = new Random();
+        int seed = random.nextInt();
+//        if(verbose) System.out.println("Seed: " + seed);
+        createPrims(row, col, seed);
     }
 
     public void createPrims(int row, int col, int seed) {
@@ -89,7 +96,7 @@ public class Labyrinth {
     public void createRDFS(int row, int col) {
         Random random = new Random();
         int seed = random.nextInt();
-        if(verbose) System.out.println("Seed: " + seed);
+//        if(verbose) System.out.println("Seed: " + seed);
         createRDFS(row, col, seed);
     }
 
@@ -280,10 +287,12 @@ public class Labyrinth {
             maze[node.x][node.y] = 2;
 
             if(verbose)
-               System.out.printf("(%d,%d) ", node.x, node.y);
+               System.out.printf("(%d, %d) ", node.x, node.y);
 
             pathLength++;
         }
+        if (verbose)
+            System.out.println();
 
         return pathLength;
     }
@@ -334,9 +343,8 @@ public class Labyrinth {
 
         if (n >= m) {
             // path does not exist
-
             if(verbose)
-                System.out.println("ceļa nav?");
+                System.out.println("No solution");
 
             return -1;
         }
@@ -368,6 +376,8 @@ public class Labyrinth {
 
             pathLength++;
         }
+        if (verbose)
+            System.out.println();
         return pathLength;
     }
 
@@ -485,7 +495,7 @@ public class Labyrinth {
         }
     }
 
-    public void Print() {
+    public void print() {
         if(!verbose)
             return;
 
@@ -525,13 +535,20 @@ public class Labyrinth {
             i = current.x;
             j = current.y;
 
-            if(verbose)
-                System.out.printf("(%d, %d) ", current.x, current.y);
 
             path.addFirst(current);
 
             maze[current.x][current.y] = 2;
         }
+
+        while (!path.isEmpty()) {
+            Pair element = path.pollFirst();
+            if(verbose)
+                System.out.printf("(%d, %d) ", element.x, element.y);
+        }
+
+        if (verbose)
+            System.out.println();
         return path;
     }
 }

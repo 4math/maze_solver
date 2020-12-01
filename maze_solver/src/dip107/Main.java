@@ -1,7 +1,6 @@
 package dip107;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
@@ -9,96 +8,98 @@ public class Main {
 
         Labyrinth lab = new Labyrinth();
 
-        boolean full_test_flag = false; // Test every algorithm
-        boolean test_prim_flag = false; // Test labyrinth creation with Prim's algorithm
-        boolean test_rdfs_flag = false; // Test labyrinth creation with RDFS algorithm
-        boolean test_solve_dfs_flag = false; // Test dfs solve algorithm
-        boolean test_solve_bfs_flag = false; // Test bfs solve algorithm
-        boolean test_solve_astar_flag = false; // Test A* solve algorithm
-        boolean pretty_print = false;
+        boolean fullTestFlag = false; // Test every algorithm
+        boolean testPrimFlag = false; // Test labyrinth creation with Prim's algorithm
+        boolean testRdfsFlag = false; // Test labyrinth creation with RDFS algorithm
+        boolean testSolveDfsFlag = false; // Test dfs solve algorithm
+        boolean testSolveBfsFlag = false; // Test bfs solve algorithm
+        boolean testSolveAstarFlag = false; // Test A* solve algorithm
+        boolean isPrettyPrint = false;
 
         for (String arg : args) {
             if (arg.compareTo("-ft") == 0) {
-                full_test_flag = true;
+                fullTestFlag = true;
             }
 
             if (arg.compareTo("-tprim") == 0) {
-                test_prim_flag = true;
+                testPrimFlag = true;
             }
 
             if (arg.compareTo("-trdfs") == 0) {
-                test_rdfs_flag = true;
+                testRdfsFlag = true;
             }
 
             if (arg.compareTo("-tdfs") == 0) {
-                test_solve_dfs_flag = true;
+                testSolveDfsFlag = true;
             }
 
             if (arg.compareTo("-tbfs") == 0) {
-                test_solve_bfs_flag = true;
+                testSolveBfsFlag = true;
             }
 
             if (arg.compareTo("-tastar") == 0) {
-                test_solve_astar_flag = true;
+                testSolveAstarFlag = true;
             }
 
             if (arg.compareTo("-pretty") == 0) {
-                pretty_print = true;
+                isPrettyPrint = true;
             }
         }
 
-        boolean testing = full_test_flag || test_prim_flag || test_solve_astar_flag || test_rdfs_flag || test_solve_bfs_flag || test_solve_dfs_flag;
-        if (testing)
+        boolean testing = fullTestFlag ||
+                          testPrimFlag ||
+                          testSolveAstarFlag ||
+                          testRdfsFlag ||
+                          testSolveBfsFlag ||
+                          testSolveDfsFlag;
+        if (testing) {
             lab.verbose = false;
+        }
 
-        if (test_rdfs_flag || full_test_flag) {
+        ArrayList<MazeTest> mazes = new ArrayList<>();
+        int[] seeds = {1, 2, 3};
+        int seed = 2021;
+
+        if (testRdfsFlag || fullTestFlag) {
             MazeTest mazeTest = lab::createRDFS;
-            int[] seeds = {1, 2, 3};
             MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
             mazeTestFramework.test();
             System.out.println("Test result RDFS:");
             mazeTestFramework.showResults();
         }
 
-        if (test_prim_flag || full_test_flag) {
+        if (testPrimFlag || fullTestFlag) {
             MazeTest mazeTest = lab::createPrims;
-            int[] seeds = {1, 2, 3};
             MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
             mazeTestFramework.test();
             System.out.println("Test result PRIM:");
             mazeTestFramework.showResults();
         }
 
-        if (test_solve_dfs_flag || full_test_flag) {
-            ArrayList<MazeTest> mazes = new ArrayList<>();
+        if (testSolveDfsFlag || fullTestFlag) {
             mazes.add(lab::createRDFS);
             mazes.add(lab::createPrims);
             PathfindingTest pfTest = lab::solveDFS;
-            int seed = 2021;
             PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
             pfTestFramework.test();
             System.out.println("Test result DFS:");
             pfTestFramework.showResults();
         }
 
-        if (test_solve_bfs_flag || full_test_flag) {
-            ArrayList<MazeTest> mazes = new ArrayList<>();
+        if (testSolveBfsFlag || fullTestFlag) {
             mazes.add(lab::createRDFS);
             mazes.add(lab::createPrims);
             PathfindingTest pfTest = lab::solveBFS;
-            int seed = 2021;
             PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
             pfTestFramework.test();
             System.out.println("Test result BFS:");
             pfTestFramework.showResults();
         }
 
-        if (test_solve_astar_flag || full_test_flag) {
-            ArrayList<MazeTest> mazes = new ArrayList<>();
+        if (testSolveAstarFlag || fullTestFlag) {
             mazes.add(lab::createRDFS);
             mazes.add(lab::createPrims);
             PathfindingTest pfTest = lab::solveAStar;
-            int seed = 2021;
             PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
             pfTestFramework.test();
             System.out.println("Test result ASTAR:");
@@ -114,12 +115,23 @@ public class Main {
             System.out.print("row count: ");
             int row = sc.nextInt();
 
+            if (row < 0) {
+                throw new Exception("Row amount cannot be a negative number!");
+            }
+
             System.out.print("column count: ");
             int col = sc.nextInt();
 
+            if (col < 0) {
+                throw new Exception("Column amount cannot be a negative number!");
+            }
+
             sc.nextLine();
-            System.out.print("Auto fill maze (y/n)?");
-            char ans = sc.nextLine().toLowerCase().charAt(0);
+            char ans;
+            do {
+                System.out.print("Auto fill maze (y/n)?");
+                ans = sc.nextLine().toLowerCase().charAt(0);
+            } while (ans != 'y' && ans != 'n');
 
             if (ans == 'n') {
                 // manual labyrinth creation
@@ -157,18 +169,18 @@ public class Main {
                 lab.verbose = true;
                 switch (genMethod) {
                     case 1:
-                        lab.createPrims(row, col, 1);
-                        if (pretty_print)
+                        lab.createPrims(row, col);
+                        if (isPrettyPrint)
                             lab.prettyPrint();
                         else
-                            lab.Print();
+                            lab.print();
                         break;
                     case 2:
-                        lab.createRDFS(row, col, 1);
-                        if (pretty_print)
+                        lab.createRDFS(row, col);
+                        if (isPrettyPrint)
                             lab.prettyPrint();
                         else
-                            lab.Print();
+                            lab.print();
                         break;
                     default:
                         return;
@@ -187,20 +199,28 @@ public class Main {
 
             lab.verbose = true;
             switch (solveMethod) {
-                case 1:
+                case 1 -> {
                     lab.solveDFS();
-                    break;
-                case 2:
+                    if (isPrettyPrint) {
+                        lab.prettyPrint();
+                    }
+                }
+                case 2 -> {
                     lab.solveBFS();
-                    break;
-                case 3:
+                    if (isPrettyPrint) {
+                        lab.prettyPrint();
+                    }
+                }
+                case 3 -> {
                     lab.solveAStar();
-                    break;
-                default:
-                    return;
+                    if (isPrettyPrint) {
+                        lab.prettyPrint();
+                    }
+                }
             }
 
         } catch (Exception e) {
+            System.out.println("Incorrect input, please try again!");
             System.out.println(e.getMessage());
         }
     }
