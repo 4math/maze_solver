@@ -128,11 +128,14 @@ public class Main {
                     for (int j = 0; j < col; j++) {
                         int answer = sc.nextInt();
                         if (answer != 0 && answer != 1) {
-                            j--;
-                            if (j < 0) {
+                            if (--j < 0) {
                                 j = col - 1;
-                                i--;
+                                if (--i < 0) {
+                                    i = 0;
+                                    j = 0;
+                                }
                             }
+
                             continue;
                         }
 
