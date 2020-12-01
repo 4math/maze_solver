@@ -5,12 +5,20 @@ import java.util.*;
 public class Labyrinth {
 
     public int[][] maze;
-    int width, height;
+    public int width, height;
+    public boolean verbose = false;
 
     public void createEmpty(int row, int col) {
         maze = new int[row][col];
         width = col;
         height = row;
+    }
+
+    public void createPrims(int row, int col) {
+        Random random = new Random();
+        int seed = random.nextInt();
+//        if(verbose) System.out.println("Seed: " + seed);
+        createPrims(row, col, seed);
     }
 
     public void createPrims(int row, int col, int seed) {
@@ -88,13 +96,12 @@ public class Labyrinth {
     public void createRDFS(int row, int col) {
         Random random = new Random();
         int seed = random.nextInt();
-        System.out.println("Seed: " + seed);
+//        if(verbose) System.out.println("Seed: " + seed);
         createRDFS(row, col, seed);
     }
 
     public void createRDFS(int row, int col, int seed) {
-        boolean isRowEven = false;
-        boolean isColEven = false;
+        boolean isRowEven = false, isColEven = false;
         if (row % 2 == 0) {
             row -= 1;
             isRowEven = true;
@@ -271,16 +278,22 @@ public class Labyrinth {
             }
         }
 
-//        System.out.println("results:");
+        if(verbose)
+            System.out.println("results:");
+
         int pathLength = 0;
         while (!deque.isEmpty()) {
             Pair node = deque.pollFirst();
             maze[node.x][node.y] = 2;
-//            System.out.printf("(%d,%d) ", node.x, node.y);
+
+            if(verbose)
+               System.out.printf("(%d, %d) ", node.x, node.y);
+
             pathLength++;
         }
-//        System.out.println();
-//        System.out.println("pathLength = " + pathLength);
+        if (verbose)
+            System.out.println();
+
         return pathLength;
     }
 
@@ -330,7 +343,9 @@ public class Labyrinth {
 
         if (n >= m) {
             // path does not exist
-            System.out.println("ceļa nav?");
+            if(verbose)
+                System.out.println("No solution");
+
             return -1;
         }
 
@@ -348,16 +363,21 @@ public class Labyrinth {
         }
 
         // Output in reverse order
-//        System.out.println("results:");
+        if(verbose)
+            System.out.println("results:");
+
         int pathLength = 0;
         while (!outputList.isEmpty()) {
             Pair node = outputList.pollLast();
             maze[node.x][node.y] = 2;
-//            System.out.printf("(%d,%d) ", node.x, node.y);
+
+            if(verbose)
+                System.out.printf("(%d,%d) ", node.x, node.y);
+
             pathLength++;
         }
-//        System.out.println();
-//        System.out.println("pathLength = " + pathLength);
+        if (verbose)
+            System.out.println();
         return pathLength;
     }
 
@@ -444,13 +464,17 @@ public class Labyrinth {
 
         if (!isEndReached) {
             path.addFirst(new Pair(-1, -1));
-            System.out.println("No solution!");
+            if(verbose)
+                System.out.println("No solution!");
         }
 
         return path.size();
     }
 
     public void prettyPrint() {
+        if(!verbose)
+            return;
+
         for (int i = 0; i < height + 2; i++) {
             for (int j = 0; j < width + 1; j++) {
                 if (i == 0 || i == height + 1) {
@@ -471,6 +495,23 @@ public class Labyrinth {
         }
     }
 
+    public void print() {
+        if(!verbose)
+            return;
+
+        for (int i = 0; i < height + 2; i++) {
+            for (int j = 0; j < width + 1; j++) {
+                if (i > 0 && i < height + 1 && j > 0 && j < width + 1) {
+                    switch (maze[i - 1][j - 1]) {
+                        case 0 -> System.out.print("0");
+                        case 1 -> System.out.print("1");
+                    }
+                }
+            }
+            System.out.println();
+        }
+    }
+
 
     // heuristic function for A* using Euclidean distance
     private double h(Pair currentNode, Pair endNode) {
@@ -479,8 +520,6 @@ public class Labyrinth {
     }
 
     private LinkedList<Pair> reconstructPath(Pair[][] cameFrom, Pair current) {
-//        int pathLength = 1;
-
         LinkedList<Pair> path = new LinkedList<>();
 
         path.addFirst(current);
@@ -495,14 +534,21 @@ public class Labyrinth {
             current = cameFrom[i][j];
             i = current.x;
             j = current.y;
-//            System.out.printf(" (%d, %d) ", current.x, current.y);
+
 
             path.addFirst(current);
 
             maze[current.x][current.y] = 2;
-//            pathLength++;
         }
-//        System.out.println("pathLength = " + pathLength);
+
+        while (!path.isEmpty()) {
+            Pair element = path.pollFirst();
+            if(verbose)
+                System.out.printf("(%d, %d) ", element.x, element.y);
+        }
+
+        if (verbose)
+            System.out.println();
         return path;
     }
 }

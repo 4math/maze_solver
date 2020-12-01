@@ -1,189 +1,219 @@
 package dip107;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
         Labyrinth lab = new Labyrinth();
-        int row, col, genMethod, solveMethod;
-        char ans;
+
+        boolean fullTestFlag = false; // Test every algorithm
+        boolean testPrimFlag = false; // Test labyrinth creation with Prim's algorithm
+        boolean testRdfsFlag = false; // Test labyrinth creation with RDFS algorithm
+        boolean testSolveDfsFlag = false; // Test dfs solve algorithm
+        boolean testSolveBfsFlag = false; // Test bfs solve algorithm
+        boolean testSolveAstarFlag = false; // Test A* solve algorithm
+        boolean isPrettyPrint = false;
+
+        for (String arg : args) {
+            if (arg.compareTo("-ft") == 0) {
+                fullTestFlag = true;
+            }
+
+            if (arg.compareTo("-tprim") == 0) {
+                testPrimFlag = true;
+            }
+
+            if (arg.compareTo("-trdfs") == 0) {
+                testRdfsFlag = true;
+            }
+
+            if (arg.compareTo("-tdfs") == 0) {
+                testSolveDfsFlag = true;
+            }
+
+            if (arg.compareTo("-tbfs") == 0) {
+                testSolveBfsFlag = true;
+            }
+
+            if (arg.compareTo("-tastar") == 0) {
+                testSolveAstarFlag = true;
+            }
+
+            if (arg.compareTo("-pretty") == 0) {
+                isPrettyPrint = true;
+            }
+        }
+
+        boolean testing = fullTestFlag ||
+                          testPrimFlag ||
+                          testSolveAstarFlag ||
+                          testRdfsFlag ||
+                          testSolveBfsFlag ||
+                          testSolveDfsFlag;
+        if (testing) {
+            lab.verbose = false;
+        }
+
+        ArrayList<MazeTest> mazes = new ArrayList<>();
+        int[] seeds = {1, 2, 3};
+        int seed = 2021;
+
+        if (testRdfsFlag || fullTestFlag) {
+            MazeTest mazeTest = lab::createRDFS;
+            MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
+            mazeTestFramework.test();
+            System.out.println("Test result RDFS:");
+            mazeTestFramework.showResults();
+        }
+
+        if (testPrimFlag || fullTestFlag) {
+            MazeTest mazeTest = lab::createPrims;
+            MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
+            mazeTestFramework.test();
+            System.out.println("Test result PRIM:");
+            mazeTestFramework.showResults();
+        }
+
+        if (testSolveDfsFlag || fullTestFlag) {
+            mazes.add(lab::createRDFS);
+            mazes.add(lab::createPrims);
+            PathfindingTest pfTest = lab::solveDFS;
+            PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
+            pfTestFramework.test();
+            System.out.println("Test result DFS:");
+            pfTestFramework.showResults();
+        }
+
+        if (testSolveBfsFlag || fullTestFlag) {
+            mazes.add(lab::createRDFS);
+            mazes.add(lab::createPrims);
+            PathfindingTest pfTest = lab::solveBFS;
+            PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
+            pfTestFramework.test();
+            System.out.println("Test result BFS:");
+            pfTestFramework.showResults();
+        }
+
+        if (testSolveAstarFlag || fullTestFlag) {
+            mazes.add(lab::createRDFS);
+            mazes.add(lab::createPrims);
+            PathfindingTest pfTest = lab::solveAStar;
+            PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
+            pfTestFramework.test();
+            System.out.println("Test result ASTAR:");
+            pfTestFramework.showResults();
+        }
+
+        if (testing)
+            return;
+
         try {
             Scanner sc = new Scanner(System.in);
 
-//            int[][] sizes = {{11, 11}, {101, 101}, {501, 501}, {751, 751}, {1001, 1001}, {1251, 1251}, {1501, 1501}, {1751, 1751}, {2001, 2001},
-//                    {2251, 2251}, {2501, 2501}, {2751, 2751}, {3001, 3001}, {101, 501}, {501, 101}, {1001, 2001}, {2001, 1001}, {3, 5001},
-//                    {5001, 3}, {501, 1001}};
-//            int cnt = 20;
-//            int seed = 1;
-//
-//            for(int i = 0; i < cnt; i++) {
-//                Labyrinth testLab = new Labyrinth();
-//
-//                testLab.createPrims(sizes[i][0], sizes[i][1], seed);
-//
-//                long start = System.nanoTime();
-//                testLab.solveAStar();
-//                long end = System.nanoTime();
-//
-//                long timeElapsed = (end - start) / 1000; // microseconds
-//
-//                //System.out.printf("size = (%d;%d) seed = %d time = %d %n", sizes[i][0], sizes[i][1], seed, timeElapsed);
-//                //System.out.printf("%d%n", timeElapsed);
-//            }
-
-
             System.out.print("row count: ");
-            row = sc.nextInt();
+            int row = sc.nextInt();
 
-            // TODO: create menu for testing, e.i., when row == -1, create menu with testing options, e.g. test Prim or RDFS generation
-            if (row == -1) {
-                MazeTest mazeTest = lab::createRDFS;
-                int[] seeds = {1, 2, 3};
-                MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
-                mazeTestFramework.test();
-                mazeTestFramework.showResults();
-                return;
-            } else if (row == -2) {
-                MazeTest mazeTest = lab::createPrims;
-                int[] seeds = {1, 2, 3};
-                MazeTestFramework mazeTestFramework = new MazeTestFramework(mazeTest, seeds);
-                mazeTestFramework.test();
-                mazeTestFramework.showResults();
-                return;
-            } else if (row == -3) {
-                ArrayList<MazeTest> mazes = new ArrayList<>();
-                mazes.add(lab::createRDFS);
-                mazes.add(lab::createPrims);
-                PathfindingTest pfTest = lab::solveDFS;
-                int seed = 2021;
-                PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
-                pfTestFramework.test();
-                pfTestFramework.showResults();
-                return;
-            } else if (row == -4) {
-                ArrayList<MazeTest> mazes = new ArrayList<>();
-                mazes.add(lab::createRDFS);
-                mazes.add(lab::createPrims);
-                PathfindingTest pfTest = lab::solveBFS;
-                int seed = 2021;
-                PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
-                pfTestFramework.test();
-                pfTestFramework.showResults();
-                return;
-            } else if (row == -5) {
-                ArrayList<MazeTest> mazes = new ArrayList<>();
-                mazes.add(lab::createRDFS);
-                mazes.add(lab::createPrims);
-                PathfindingTest pfTest = lab::solveAStar;
-                int seed = 2021;
-                PathfindingTestFramework pfTestFramework = new PathfindingTestFramework(pfTest, mazes, seed);
-                pfTestFramework.test();
-                pfTestFramework.showResults();
-                return;
+            if (row < 0) {
+                throw new Exception("Row amount cannot be a negative number!");
             }
 
             System.out.print("column count: ");
-            col = sc.nextInt();
+            int col = sc.nextInt();
+
+            if (col < 0) {
+                throw new Exception("Column amount cannot be a negative number!");
+            }
 
             sc.nextLine();
-            System.out.print("Auto fill maze (y/n)?");
-            ans = sc.nextLine().toLowerCase().charAt(0);
+            char ans;
+            do {
+                System.out.print("Auto fill maze (y/n)?");
+                ans = sc.nextLine().toLowerCase().charAt(0);
+            } while (ans != 'y' && ans != 'n');
 
             if (ans == 'n') {
                 // manual labyrinth creation
-                // TODO: validate input
-                int[][] maze = new int[row][col];
-                int answer;
+                lab.createEmpty(row, col);
                 for (int i = 0; i < row; i++) {
                     for (int j = 0; j < col; j++) {
-                        answer = sc.nextInt();
-                        maze[i][j] = answer;
+                        int answer = -1;
+                        while (answer != 0 && answer != 1) {
+                            answer = sc.nextInt();
+                        }
+
+                        lab.maze[i][j] = answer;
                     }
                 }
-                lab.maze = maze;
-                lab.width = col;
-                lab.height = row;
             } else if (ans == 'y') {
                 // generate maze
                 // choose generation method
                 System.out.println("1) Prim's algorithm");
                 System.out.println("2) RDFS algorithm");
-                System.out.print("labyrinth method (1-2): ");
-                genMethod = sc.nextInt();
 
-                switch (genMethod) {
-                    case 1:
-                        lab.createPrims(row, col, 1);
-//                        lab.prettyPrint();
-                        break;
-                    case 2:
-                        lab.createRDFS(row, col, 3);
-                        lab.prettyPrint();
-                        break;
+                int genMethod = 0;
+                while (genMethod < 1 || genMethod > 2) {
+                    System.out.print("method number (1-3):");
+                    genMethod = sc.nextInt();
                 }
 
-//                for(int r = 0; r < row; r++) {
-//                    for(int c = 0; c < col; c++) {
-//                        if(lab.maze[r][c] == 0) {
-//                            System.out.print("░");
-//                        } else {
-//                            System.out.print("█");
-//                        }
-//                    }
-//                    System.out.println();
-//                }
-            } else {
-                // error
-                throw new Exception("Not your turn, ham");
-            }
+                lab.verbose = true;
+                switch (genMethod) {
+                    case 1:
+                        lab.createPrims(row, col);
+                        if (isPrettyPrint)
+                            lab.prettyPrint();
+                        else
+                            lab.print();
+                        break;
+                    case 2:
+                        lab.createRDFS(row, col);
+                        if (isPrettyPrint)
+                            lab.prettyPrint();
+                        else
+                            lab.print();
+                        break;
+                    default:
+                        return;
+                }
+            } else return;
 
-            // TODO: check if int > 3 && < 1
             System.out.println("1) DFS method");
             System.out.println("2) BFS method");
             System.out.println("3) A* method");
-            System.out.print("method number (1-3):");
-            solveMethod = sc.nextInt();
 
-            long timeResult;
+            int solveMethod = 0;
+            while (solveMethod < 1 || solveMethod > 3) {
+                System.out.print("method number (1-3):");
+                solveMethod = sc.nextInt();
+            }
+
+            lab.verbose = true;
             switch (solveMethod) {
-                case 1:
-//                    TimeTest timeTestDFS = lab::solveDFS;
-//                    timeResult = TimeTesting.executionTime(timeTestDFS);
-//                    System.out.println();
-//                    System.out.println("timeResult = " + timeResult);
-                    int pathLength = lab.solveDFS();
-                    System.out.println("path length is " + pathLength);
-                    lab.prettyPrint();
-                    break;
-                case 2:
-//                    TimeTest timeTestBFS = lab::solveBFS;
-//                    timeResult = TimeTesting.executionTime(timeTestBFS);
-//                    System.out.println();
-//                    System.out.println("timeResult = " + timeResult);
-                    int path = lab.solveBFS();
-                    System.out.println("path length is " + path);
-//                    lab.prettyPrint();
-                    break;
-                case 3:
-//                    TimeTest timeTestAStar = lab::solveAStar;
-//                    timeResult = TimeTesting.executionTime(timeTestAStar);
-//                    System.out.println("timeResult = " + timeResult);
-//                    LinkedList<Pair> result = lab.solveAStar();
-//                    System.out.println("path length is " + result.size());
-
-                    lab.prettyPrint();
-                    break;
-                default:
-                    System.out.println("Incorrect input");
-                    break;
+                case 1 -> {
+                    lab.solveDFS();
+                    if (isPrettyPrint) {
+                        lab.prettyPrint();
+                    }
+                }
+                case 2 -> {
+                    lab.solveBFS();
+                    if (isPrettyPrint) {
+                        lab.prettyPrint();
+                    }
+                }
+                case 3 -> {
+                    lab.solveAStar();
+                    if (isPrettyPrint) {
+                        lab.prettyPrint();
+                    }
+                }
             }
 
         } catch (Exception e) {
+            System.out.println("Incorrect input, please try again!");
             System.out.println(e.getMessage());
         }
-
     }
 }
