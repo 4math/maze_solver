@@ -129,6 +129,10 @@ public class Main {
                         int answer = sc.nextInt();
                         if (answer != 0 && answer != 1) {
                             j--;
+                            if (j < 0) {
+                                j = col - 1;
+                                i--;
+                            }
                             continue;
                         }
 
