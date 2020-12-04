@@ -154,7 +154,7 @@ public class Main {
 
                 int genMethod = 0;
                 while (genMethod < 1 || genMethod > 2) {
-                    System.out.print("method number (1-3):");
+                    System.out.print("method number (1-2):");
                     genMethod = sc.nextInt();
                 }
 
