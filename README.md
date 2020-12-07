@@ -31,7 +31,7 @@ Project is built using Intellij IDEA 2020
 
 ## Printing mazes
 
-Using a **-pretty** flag while starting a program it is possible to see a generated maze and then a found path to the exit:
+Using a **-pretty** flag while starting a program, it is possible to see a generated maze and then find a path to the exit:
 
 ![example of a maze](./images/example.gif)
 
