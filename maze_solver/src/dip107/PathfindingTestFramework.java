@@ -1,7 +1,6 @@
 package dip107;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 interface PathfindingTest {
     int testPathfinding();
