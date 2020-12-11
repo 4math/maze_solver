@@ -213,7 +213,6 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println("Incorrect input, please try again!");
-            System.out.println(e.getMessage());
         }
     }
 }
